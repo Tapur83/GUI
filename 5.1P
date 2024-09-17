@@ -1,0 +1,64 @@
+import RPi.GPIO as GPIO
+import tkinter as tk
+
+# Define GPIO pins for the LEDs
+red_led_pin = 27
+red2_led_pin = 22
+green_led_pin = 2
+
+# Function to initialize GPIO
+def initialize_gpio():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(red_led_pin, GPIO.OUT)
+    GPIO.setup(red2_led_pin, GPIO.OUT)
+    GPIO.setup(green_led_pin, GPIO.OUT)
+
+# Function to turn off all LEDs
+def turn_off_all():
+    GPIO.output(red_led_pin, GPIO.LOW)
+    GPIO.output(red2_led_pin, GPIO.LOW)
+    GPIO.output(green_led_pin, GPIO.LOW)
+
+def reset_leds():
+    turn_off_all()
+    red_button.deselect()
+    red2_button.deselect()
+    green_button.deselect()
+
+# Function to handle radio button selection
+def on_radio_button_select(value):
+    turn_off_all()
+    if value == "Red":
+        GPIO.output(red_led_pin, GPIO.HIGH)
+    elif value == "Red2":
+        GPIO.output(green_led_pin, GPIO.HIGH)
+    elif value == "Green":
+        GPIO.output(blue_led_pin, GPIO.HIGH)
+
+# Create the GUI window
+window = tk.Tk()
+window.title("Lights")
+
+# Create radio buttons
+red_button = tk.Radiobutton(window, text="Red", value="Red", command=lambda: on_radio_button_select("Red"))
+green_button = tk.Radiobutton(window, text="Red2", value="Red2", command=lambda: on_radio_button_select("Red2"))
+blue_button = tk.Radiobutton(window, text="Green", value="Green", command=lambda: on_radio_button_select("Green"))
+
+# Create exit button
+exit_button = tk.Button(window, text="Exit", command=window.quit)
+
+# Crearte reset button
+reset_button = tk.Button(window, text="Reset", command=reset_leds)
+
+# Place the buttons on the window
+red_button.pack()
+green_button.pack()
+blue_button.pack()
+exit_button.pack()
+
+# Initialize GPIO and start the GUI event loop
+initialize_gpio()
+window.mainloop()
+
+# Clean up GPIO
+GPIO.cleanup()
